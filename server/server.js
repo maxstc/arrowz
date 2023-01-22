@@ -16,20 +16,22 @@ let orders = [];
 //type == 2 is gameover
 //type == 4,5,6,7 is new player with direction type%4
 function turn(player, type) {
-    console.log("turning!");
+    console.log("turning!" + player + "," + type);
     if (type === 2) { //game over
         //end the line
         last_line(player).direction += 4;
     }
     else {
         //add a new line
+        let dir = (last_line(player).direction + type + 4) % 4;
         lines[player].push({
             x1: last_line(player).x2,
             y1: last_line(player).y2,
             x2: last_line(player).x2,
             y2: last_line(player).y2,
-            direction: (last_line(player).direction + type + 4) % 4
+            direction: dir
         });
+        console.log(lines[player]);
     }
     notify(player, type, last_line(player).x1, last_line(player).y1);
 }

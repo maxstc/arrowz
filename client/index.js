@@ -2,20 +2,44 @@ let lines = [];
 const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
 let ctx = 0;
 
-function turn(player, type) {
-    console.log("turning!");
-    if (type === 2) {
-        //end the line
+// function turn(player, type) {
+//     console.log("turning!" + player + "," + type);
+//     if (type === 2) {
+//         //end the line
+//         last_line(player).direction += 4;
+//     }
+//     else {
+//         //add a new line
+//         let dir = (last_line(player).direction + type + 4) % 4;
+//         console.log(last_line(player).direction);
+//         console.log
+//         console.log(dir);
+//         lines[player].push({
+//             x1: last_line(player).x2,
+//             y1: last_line(player).y2,
+//             x2: last_line(player).x2,
+//             y2: last_line(player).y2,
+//             direction: dir
+//         });
+//     }
+// }
+
+function set_line(player, new_dir, x, y) {
+    console.log("set_line(%s,%s,%s,%s)", player, new_dir, x, y);
+    if (new_dir === 2) {
         last_line(player).direction += 4;
     }
     else {
         //add a new line
+        let dir = (last_line(player).direction + new_dir + 4) % 4;
+        last_line(player).x2 = x;
+        last_line(player).y2 = y;
         lines[player].push({
-            x1: last_line(player).x2,
-            y1: last_line(player).y2,
-            x2: last_line(player).x2,
-            y2: last_line(player).y2,
-            direction: (last_line(player).direction + type + 4) % 4
+            x1: x,
+            y1: y,
+            x2: x,
+            y2: y,
+            direction: dir
         });
     }
 }
@@ -95,11 +119,16 @@ function add_player(dir, x, y) {
 
 function read_notify(notification) {
     let parts = notification.split(",");
+    parts[0] = Number(parts[0]);
+    parts[1] = Number(parts[1]);
+    parts[2] = Number(parts[2]);
+    parts[3] = Number(parts[3]);
     if (parts[1] >= 4) { //new player
         add_player(parts[1] - 4, parts[2], parts[3]);
     }
     else {
-        turn(parts[0], parts[1]);
+        set_line(parts[0], parts[1], parts[2], parts[3]);
+        //turn(parts[0], parts[1]);
     }
     console.log(parts);
 }
