@@ -1,3 +1,7 @@
+const LEFT = -1;
+const RIGHT = 1;
+const END_OF_LINE = 4;
+
 const http = require("http");
 const ws = require("ws");
 const fs = require("fs");
@@ -12,28 +16,35 @@ let orders = [];
 //3   1
 //  2
 
-//type == -1 is left, 1 is right
-//type == 2 is gameover
-//type == 4,5,6,7 is new player with direction type%4
 function turn(player, type) {
-    console.log("turning!" + player + "," + type);
-    if (type === 2) { //game over
-        //end the line
-        last_line(player).direction += 4;
-    }
-    else {
-        //add a new line
-        let dir = (last_line(player).direction + type + 4) % 4;
-        lines[player].push({
-            x1: last_line(player).x2,
-            y1: last_line(player).y2,
-            x2: last_line(player).x2,
-            y2: last_line(player).y2,
-            direction: dir
-        });
-        console.log(lines[player]);
-    }
+    //add a new line
+    let dir = (last_line(player).direction + type + 4) % 4;
+    lines[player].push({
+        x1: last_line(player).x2,
+        y1: last_line(player).y2,
+        x2: last_line(player).x2,
+        y2: last_line(player).y2,
+        direction: dir
+    });
     notify(player, type, last_line(player).x1, last_line(player).y1);
+}
+
+function end_line(player) {
+    last_line(player).direction += END_OF_LINE;
+    notify(player, END_OF_LINE, last_line(player).x2, last_line(player).x2);
+}
+
+function start_line() {
+    let id = lines.length;
+    lines.push([]);
+    lines[id].push({
+        x1: 50,
+        y1: 50,
+        x2: 50,
+        y2: 50,
+        direction: 0
+    });
+    notify(id, last_line(id).direction, last_line(id).x1, last_line(id).y1);
 }
 
 function last_line(player) {
@@ -41,7 +52,7 @@ function last_line(player) {
 }
 
 function is_game_over(player) {
-    if (last_line(player).direction >= 8) {
+    if (last_line(player).direction >= END_OF_LINE) {
         return false;
     }
 
@@ -74,7 +85,7 @@ function loop() {
 
     for (let i = 0; i < lines.length; i++) {
         let direction = last_line(i).direction;
-
+        let id = lines.length;
         if (direction === 0) {
             last_line(i).y2--;
         }
@@ -92,26 +103,13 @@ function loop() {
     for(let i = 0; i < lines.length; i++) {
         if (is_game_over(i)) {
             console.log(i + " lost via an aburpt braking maneuver!");
-            turn(i, 2);
+            end_line(i);
         }
     }
 }
 
 function start() {
     setInterval(loop, 50);
-}
-
-function add_player() {
-    let id = lines.length;
-    lines.push([]);
-    lines[id].push({
-        x1: 50,
-        y1: 50,
-        x2: 50,
-        y2: 50,
-        direction: 0
-    });
-    return id;
 }
 
 ////////// HTTP SERVER //////////
@@ -167,7 +165,10 @@ const ws_server = new ws.WebSocketServer({ server: http_server });
 let websockets = [];
 
 ws_server.on("connection", (websocket) => {
-    let id = add_player();
+    websockets.push(websocket);
+    start_line();
+    send_players_to_newest_player();
+    let id = lines.length - 1;
     console.log(id + " connected");
     websocket.on("message", (data) => {
         let msg = "" + data;
@@ -178,18 +179,26 @@ ws_server.on("connection", (websocket) => {
             orders[id] = 1;
         }
         else {
-            console.log(msg);
+            console.log("bad message:" + msg);
         }
     });
-    websocket.send("hello!");
-    websockets.push(websocket);
-    turn(id, 5);
 });
 
 function notify(player, type, x, y) {
-    console.log("notifying!");
+    console.log("notifying!%s,%s,%s,%s", player, type, x, y);
     for (let i = 0; i < websockets.length; i++) {
         websockets[i].send(player + "," + type + "," + x + "," + y);
+    }
+}
+
+function send_players_to_newest_player() {
+    console.log("catching newest player up");
+    let player = websockets.length - 1;
+    for (let i = 0; i < lines.length - 1; i++) {
+        websockets[player].send(i + "," + lines[i][0].direction + "," + lines[i][0].x1 + "," + lines[i][0].y1);
+        for (let j = 0; j < lines[i].length; j++) {
+            websockets[player].send(i + "," + lines[i][j].direction + "," + lines[i][j].x2 + "," + lines[i][j].y2);
+        }
     }
 }
 

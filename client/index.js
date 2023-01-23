@@ -1,3 +1,8 @@
+const LEFT = -1;
+const RIGHT = 1;
+const END_OF_LINE = 4;
+
+let my_id = -1;
 let lines = [];
 const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
 let ctx = 0;
@@ -25,15 +30,40 @@ let ctx = 0;
 // }
 
 function set_line(player, new_dir, x, y) {
+    if (my_id === -1) {
+        console.log("Connected as:" + player);
+        my_id = player;
+        for(let i = 0; i < my_id + 1; i++) {
+            lines.push([]);
+        }
+    }
     console.log("set_line(%s,%s,%s,%s)", player, new_dir, x, y);
-    if (new_dir === 2) {
-        last_line(player).direction += 4;
+    if (new_dir === END_OF_LINE) {
+        console.log("Line ended: " + player);
+        last_line(player).direction += END_OF_LINE;
+    }
+    else if (player > lines.length) {
+        //add a new line
+        console.log("Line started: " + player);
+        lines.push([]);
+        lines[player].push({
+            x1: x,
+            y1: y,
+            x2: x,
+            y2: y,
+            direction: new_dir
+        });
     }
     else {
-        //add a new line
-        let dir = (last_line(player).direction + new_dir + 4) % 4;
-        last_line(player).x2 = x;
-        last_line(player).y2 = y;
+        let dir;
+        if (lines[player].length > 0) {
+            dir = (last_line(player).direction + new_dir + 4) % 4;
+            last_line(player).x2 = x;
+            last_line(player).y2 = y;
+        }
+        else {
+            dir = new_dir;
+        }
         lines[player].push({
             x1: x,
             y1: y,
@@ -49,11 +79,12 @@ function last_line(player) {
 }
 
 function is_game_over(player) {
-    if (last_line(player).direction >= 8) {
+    if (last_line(player).direction >= END_OF_LINE_ADDITION) {
         return false;
     }
 
     if (last_line(player).x2 <= 0 || last_line(player).x2 >= 800 || last_line(player).y2 <= 0 || last_line(player).y2 >= 800) {
+        end_line(i);
         return true;
     }
     // for(let i = 0; i < lines.length; i++) {
@@ -90,12 +121,11 @@ function loop() {
         }
     }
 
-    for(let i = 0; i < lines.length; i++) {
-        if (is_game_over(i)) {
-            console.log(i + " lost via an aburpt braking maneuver!");
-            turn(i, 2);
-        }
-    }
+    // for(let i = 0; i < lines.length; i++) {
+    //     if (is_game_over(i)) {
+    //         console.log(i + " lost via an aburpt braking maneuver!");
+    //     }
+    // }
     
     draw();
 }
@@ -104,33 +134,14 @@ function start() {
     setInterval(loop, 50);
 }
 
-function add_player(dir, x, y) {
-    let id = lines.length;
-    lines.push([]);
-    lines[id].push({
-        x1: x,
-        y1: y,
-        x2: x,
-        y2: y,
-        direction: dir
-    });
-    return id;
-}
-
 function read_notify(notification) {
     let parts = notification.split(",");
     parts[0] = Number(parts[0]);
     parts[1] = Number(parts[1]);
     parts[2] = Number(parts[2]);
     parts[3] = Number(parts[3]);
-    if (parts[1] >= 4) { //new player
-        add_player(parts[1] - 4, parts[2], parts[3]);
-    }
-    else {
-        set_line(parts[0], parts[1], parts[2], parts[3]);
-        //turn(parts[0], parts[1]);
-    }
-    console.log(parts);
+    console.log("notif:" + notification);
+    set_line(parts[0], parts[1], parts[2], parts[3]);
 }
 
 function draw() {
@@ -155,7 +166,6 @@ function openSocket() {
 
     socket.onopen = function(e) {
         console.log("started");
-        socket.send("test");
     };
 
     socket.onmessage = function(e) {
