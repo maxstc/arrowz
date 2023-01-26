@@ -152,8 +152,8 @@ function draw() {
         ctx.strokeStyle = colors[i];
         for (let j = 0; j < lines[i].length; j++) {
             ctx.beginPath();
-            ctx.moveTo(lines[i][j].x1, lines[i][j].y1);
-            ctx.lineTo(lines[i][j].x2, lines[i][j].y2);
+            ctx.moveTo(lines[i][j].x1 + 0.5, lines[i][j].y1 + 0.5);
+            ctx.lineTo(lines[i][j].x2 + 0.5, lines[i][j].y2 + 0.5);
             ctx.stroke();
         }
     }
