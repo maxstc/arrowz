@@ -37,12 +37,11 @@ function set_line(player, new_dir, x, y) {
             lines.push([]);
         }
     }
-    console.log("set_line(%s,%s,%s,%s)", player, new_dir, x, y);
-    if (new_dir === END_OF_LINE) {
+    if (new_dir >= END_OF_LINE) {
         console.log("Line ended: " + player);
         last_line(player).direction += END_OF_LINE;
     }
-    else if (player > lines.length) {
+    else if (player >= lines.length) {
         //add a new line
         console.log("Line started: " + player);
         lines.push([]);
@@ -92,7 +91,7 @@ function is_game_over(player) {
     //     for(let j = 0; j < limit; j++) {
     //         let line_direction = lines[i][j].direction % 8;
     //         if (line_direction % 2 === last_line(player).direction % 2) {
-    //             return false;
+    //             return false;conso
     //         }
 
     //         if (line_direction === 0) {
@@ -135,12 +134,12 @@ function start() {
 }
 
 function read_notify(notification) {
+    console.log(notification);
     let parts = notification.split(",");
     parts[0] = Number(parts[0]);
     parts[1] = Number(parts[1]);
     parts[2] = Number(parts[2]);
     parts[3] = Number(parts[3]);
-    console.log("notif:" + notification);
     set_line(parts[0], parts[1], parts[2], parts[3]);
 }
 
