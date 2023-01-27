@@ -5,7 +5,7 @@ requires `ws` from npm
 0. install node.js
 1. run `npm install ws` from `arrowz/`
 2. run `node server.js` from `arrowz/server/`
-3. connect via `\<your_ip\>:41399` or `localhost:41399` in your web browser
+3. connect via `<your_ip>:41399` or `localhost:41399` in your web browser
 
 ## todo
 0. fix multiplayer catchup
