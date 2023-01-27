@@ -1,11 +1,11 @@
 # arrowz: a web game by maxstc
-requires ws from npm
+requires `ws` from npm
 
 ## how to run
 0. install node.js
-1. run "npm install ws" from "arrowz/"
-2. run "node server.js" from "arrowz/server/"
-3. connect via "\<your_ip\>:41399" or "localhost:41399" in your web browser
+1. run `npm install ws` from `arrowz/`
+2. run `node server.js` from `arrowz/server/`
+3. connect via `\<your_ip\>:41399` or `localhost:41399` in your web browser
 
 ## todo
 0. fix multiplayer catchup
