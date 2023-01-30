@@ -78,7 +78,7 @@ function is_game_over(player) {
 
 function loop() {
     for (let i = 0; i < orders.length; i++) {
-        if (orders[i] != 0) {
+        if (orders[i] != 0 && last_line(i).direction < END_OF_LINE) {
             turn(i, orders[i]);
         }
         orders[i] = 0;
