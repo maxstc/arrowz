@@ -169,6 +169,7 @@ function loop() {
         if (is_game_over(i)) {
             console.log(i + " lost via an aburpt braking maneuver!");
             end_line(i);
+            console.log(last_line(i));
         }
     }
 }
