@@ -1,6 +1,7 @@
 const LEFT = -1;
 const RIGHT = 1;
 const END_OF_LINE = 4;
+const LINE_SPEED = 3;
 
 let my_id = -1;
 let lines = [];
@@ -54,21 +55,16 @@ function set_line(player, new_dir, x, y) {
         });
     }
     else {
-        let dir;
         if (lines[player].length > 0) {
-            dir = (last_line(player).direction + new_dir + 4) % 4;
             last_line(player).x2 = x;
             last_line(player).y2 = y;
-        }
-        else {
-            dir = new_dir;
         }
         lines[player].push({
             x1: x,
             y1: y,
             x2: x,
             y2: y,
-            direction: dir
+            direction: new_dir
         });
     }
 }
@@ -107,16 +103,16 @@ function loop() {
         let direction = last_line(i).direction;
 
         if (direction === 0) {
-            last_line(i).y2--;
+            last_line(i).y2 -= LINE_SPEED;
         }
         else if (direction === 1) {
-            last_line(i).x2++;
+            last_line(i).x2 += LINE_SPEED;
         }
         else if (direction === 2) {
-            last_line(i).y2++;
+            last_line(i).y2 += LINE_SPEED;
         }
         else if (direction === 3) {
-            last_line(i).x2--;
+            last_line(i).x2 -= LINE_SPEED;
         }
     }
 

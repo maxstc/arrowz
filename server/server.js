@@ -1,6 +1,7 @@
 const LEFT = -1;
 const RIGHT = 1;
 const END_OF_LINE = 4;
+const LINE_SPEED = 3;
 
 const http = require("http");
 const ws = require("ws");
@@ -26,7 +27,7 @@ function turn(player, type) {
         y2: last_line(player).y2,
         direction: dir
     });
-    notify(player, type, last_line(player).x1, last_line(player).y1);
+    notify(player, dir, last_line(player).x1, last_line(player).y1);
 }
 
 function end_line(player) {
@@ -87,16 +88,16 @@ function loop() {
         let direction = last_line(i).direction;
         let id = lines.length;
         if (direction === 0) {
-            last_line(i).y2--;
+            last_line(i).y2 -= LINE_SPEED;
         }
         else if (direction === 1) {
-            last_line(i).x2++;
+            last_line(i).x2 += LINE_SPEED;
         }
         else if (direction === 2) {
-            last_line(i).y2++;
+            last_line(i).y2 += LINE_SPEED;
         }
         else if (direction === 3) {
-            last_line(i).x2--;
+            last_line(i).x2 -= LINE_SPEED;
         }
     }
 
@@ -184,10 +185,10 @@ ws_server.on("connection", (websocket) => {
     });
 });
 
-function notify(player, type, x, y) {
-    console.log("notifying!%s,%s,%s,%s", player, type, x, y);
+function notify(player, dir, x, y) {
+    console.log("notifying!%s,%s,%s,%s", player, dir, x, y);
     for (let i = 0; i < websockets.length; i++) {
-        websockets[i].send(player + "," + type + "," + x + "," + y);
+        websockets[i].send(player + "," + dir + "," + x + "," + y);
     }
 }
 
