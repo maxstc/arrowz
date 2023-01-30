@@ -1,7 +1,7 @@
 const LEFT = -1;
 const RIGHT = 1;
 const END_OF_LINE = 4;
-const LINE_SPEED = 3;
+const LINE_SPEED = 1;
 
 let my_id = -1;
 let lines = [];
@@ -74,7 +74,7 @@ function last_line(player) {
 }
 
 function is_game_over(player) {
-    if (last_line(player).direction >= END_OF_LINE_ADDITION) {
+    if (last_line(player).direction >= END_OF_LINE) {
         return false;
     }
 
@@ -143,8 +143,10 @@ function draw() {
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, 800, 800);
     for (let i = 0; i < lines.length; i++) {
-        ctx.fillStyle = colors[i];
-        ctx.strokeStyle = colors[i];
+        if (i < 4) {
+            ctx.fillStyle = colors[i];
+            ctx.strokeStyle = colors[i];
+        }
         for (let j = 0; j < lines[i].length; j++) {
             ctx.beginPath();
             ctx.moveTo(lines[i][j].x1 + 0.5, lines[i][j].y1 + 0.5);

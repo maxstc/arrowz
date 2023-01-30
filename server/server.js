@@ -1,7 +1,7 @@
 const LEFT = -1;
 const RIGHT = 1;
 const END_OF_LINE = 4;
-const LINE_SPEED = 3;
+const LINE_SPEED = 1;
 
 const http = require("http");
 const ws = require("ws");
@@ -38,18 +38,60 @@ function end_line(player) {
 function start_line() {
     let id = lines.length;
     lines.push([]);
-    lines[id].push({
-        x1: 50,
-        y1: 50,
-        x2: 50,
-        y2: 50,
-        direction: 0
-    });
+    if (id === 0) {
+        lines[id].push({
+            x1: 350,
+            y1: 350,
+            x2: 350,
+            y2: 350,
+            direction: 1
+        });
+    }
+    else if (id === 1) {
+        lines[id].push({
+            x1: 450,
+            y1: 350,
+            x2: 450,
+            y2: 350,
+            direction: 2
+        });
+    }
+    else if (id === 2) {
+        lines[id].push({
+            x1: 450,
+            y1: 450,
+            x2: 450,
+            y2: 450,
+            direction: 3
+        });
+    }
+    else if (id === 3) {
+        lines[id].push({
+            x1: 350,
+            y1: 450,
+            x2: 350,
+            y2: 450,
+            direction: 0
+        });
+    }
+    else {
+        lines[id].push({
+            x1: 0,
+            y1: 0,
+            x2: 0,
+            y2: 0,
+            direction: 0
+        });
+    }
     notify(id, last_line(id).direction, last_line(id).x1, last_line(id).y1);
 }
 
 function last_line(player) {
     return lines[player][lines[player].length - 1];
+}
+
+function is_between(a, b, c) {
+    return (b <= a && a <= c) || (c <= a && a <= b);
 }
 
 function is_game_over(player) {
@@ -60,6 +102,28 @@ function is_game_over(player) {
     if (last_line(player).x2 <= 0 || last_line(player).x2 >= 800 || last_line(player).y2 <= 0 || last_line(player).y2 >= 800) {
         return true;
     }
+
+    let current_line = last_line(player);
+
+    for (let i = 0; i < lines.length; i++) {
+        for (let j = 0; j < (lines[i].length - (i === player ? 1 : 0)); j++) {
+            if (lines[i][j].x1 === lines[i][j].x2) {
+                if (current_line.x2 === lines[i][j].x2) {
+                    if (is_between(current_line.y2, lines[i][j].y1, lines[i][j].y2)) {
+                        return true;
+                    }
+                }
+            }
+            else {
+                if (current_line.y2 === lines[i][j].y2) {
+                    if (is_between(current_line.x2, lines[i][j].x1, lines[i][j].x2)) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
     // for(let i = 0; i < lines.length; i++) {
     //     let limit = lines[i].length - ((i === player) ? 1 : 0);
     //     for(let j = 0; j < limit; j++) {
