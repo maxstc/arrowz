@@ -231,9 +231,9 @@ let websockets = [];
 
 ws_server.on("connection", (websocket) => {
     websockets.push(websocket);
+    let id = websockets.length - 1;
     start_line();
     send_players_to_newest_player();
-    let id = lines.length - 1;
     console.log(id + " connected");
     websocket.on("message", (data) => {
         let msg = "" + data;
