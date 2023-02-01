@@ -14,3 +14,4 @@ runs on port 41399
 1. fix issue where refreshing makes the server notify NaN to the clients (type is undefined when passed to notify so x + undefined = NaN?)
 2. add small trangle thing to represent players
 3. waiting room and start game button/restart game when everyone is gone
+4. cookie to reconnect?
