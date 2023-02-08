@@ -96,9 +96,9 @@ function is_between(a, b, c) {
 
 function is_game_over(player) {
     if (last_line(player).direction >= END_OF_LINE || isNaN(last_line(player).direction)) {
-        if (isNaN(last_line(player).direction)) {
-            console.log("WAAAAAAAAAAA");
-        }
+        // if (isNaN(last_line(player).direction)) {
+        //     console.log("WAAAAAAAAAAA");
+        // }
         return false;
     }
 
@@ -145,7 +145,7 @@ function is_game_over(player) {
 
 function loop() {
     for (let i = 0; i < orders.length; i++) {
-        if (orders[i] != 0 && last_line(i).direction < END_OF_LINE) {
+        if (orders[i] != 0 && last_line(i).direction < END_OF_LINE && !isNaN(last_line(i).direction)) {
             turn(i, orders[i]);
         }
         orders[i] = 0;
