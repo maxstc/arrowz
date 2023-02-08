@@ -3,6 +3,8 @@ const RIGHT = 1;
 const END_OF_LINE = 4;
 const LINE_SPEED = 1;
 
+let running = false;
+
 let my_id = -1;
 let lines = [];
 const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
@@ -29,6 +31,17 @@ let ctx = 0;
 //         });
 //     }
 // }
+
+function start() {
+    console.log("starting");
+    running = true;
+}
+
+function stop() {
+    console.log("stopping");
+    running = false;
+    lines = [];
+}
 
 function set_line(player, new_dir, x, y) {
     if (my_id === -1) {
@@ -101,30 +114,32 @@ function is_game_over(player) {
 }
 
 function loop() {
-    for (let i = 0; i < lines.length; i++) {
-        let direction = last_line(i).direction;
-
-        if (direction === 0) {
-            last_line(i).y2 -= LINE_SPEED;
-        }
-        else if (direction === 1) {
-            last_line(i).x2 += LINE_SPEED;
-        }
-        else if (direction === 2) {
-            last_line(i).y2 += LINE_SPEED;
-        }
-        else if (direction === 3) {
-            last_line(i).x2 -= LINE_SPEED;
-        }
-    }
-
-    // for(let i = 0; i < lines.length; i++) {
-    //     if (is_game_over(i)) {
-    //         console.log(i + " lost via an aburpt braking maneuver!");
-    //     }
-    // }
+    if (running) {
+        for (let i = 0; i < lines.length; i++) {
+            let direction = last_line(i).direction;
     
-    draw();
+            if (direction === 0) {
+                last_line(i).y2 -= LINE_SPEED;
+            }
+            else if (direction === 1) {
+                last_line(i).x2 += LINE_SPEED;
+            }
+            else if (direction === 2) {
+                last_line(i).y2 += LINE_SPEED;
+            }
+            else if (direction === 3) {
+                last_line(i).x2 -= LINE_SPEED;
+            }
+        }
+    
+        // for(let i = 0; i < lines.length; i++) {
+        //     if (is_game_over(i)) {
+        //         console.log(i + " lost via an aburpt braking maneuver!");
+        //     }
+        // }
+        
+        draw();
+    }
 }
 
 function start() {
@@ -196,7 +211,15 @@ function openSocket() {
     };
 
     socket.onmessage = function(e) {
-        read_notify(e.data);
+        if (e.data + "" === "start") {
+            start();
+        }
+        else if (e.data + "" === "stop") {
+            stop();
+        }
+        else {
+            read_notify(e.data);
+        }
     };
 
     socket.onclose = function(e) {

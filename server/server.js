@@ -247,6 +247,18 @@ ws_server.on("connection", (websocket) => {
         else if (msg === "r") {
             orders[id] = 1;
         }
+        else if (msg === "start") {
+            console.log("starting");
+            for (let i = 0; i < websockets.length; i++) {
+                websockets[i].send("start");
+            }
+        }
+        else if (msg === "stop") {
+            console.log("starting");
+            for (let i = 0; i < websockets.length; i++) {
+                websockets[i].send("stop");
+            }
+        }
         else {
             console.log("bad message:" + msg);
         }
