@@ -148,6 +148,34 @@ function draw() {
         if (i < 4) {
             ctx.fillStyle = colors[i];
             ctx.strokeStyle = colors[i];
+            if (last_line(i).direction === 0) {
+                ctx.beginPath();
+                ctx.moveTo(last_line(i).x2 - 2.5, last_line(i).y2 + 2.5);
+                ctx.lineTo(last_line(i).x2 + 2.5, last_line(i).y2 + 2.5);
+                ctx.lineTo(last_line(i).x2, last_line(i).y2 - 2.5);
+                ctx.fill();
+            }
+            else if (last_line(i).direction === 1) {
+                ctx.beginPath();
+                ctx.moveTo(last_line(i).x2 - 2.5, last_line(i).y2 - 2.5);
+                ctx.lineTo(last_line(i).x2 - 2.5, last_line(i).y2 + 2.5);
+                ctx.lineTo(last_line(i).x2 + 2.5, last_line(i).y2);
+                ctx.fill();
+            }
+            else if (last_line(i).direction === 2) {
+                ctx.beginPath();
+                ctx.moveTo(last_line(i).x2 - 2.5, last_line(i).y2 - 2.5);
+                ctx.lineTo(last_line(i).x2 + 2.5, last_line(i).y2 - 2.5);
+                ctx.lineTo(last_line(i).x2, last_line(i).y2 + 2.5);
+                ctx.fill();
+            }
+            else if (last_line(i).direction === 3) {
+                ctx.beginPath();
+                ctx.moveTo(last_line(i).x2 + 2.5, last_line(i).y2 - 2.5);
+                ctx.lineTo(last_line(i).x2 + 2.5, last_line(i).y2 + 2.5);
+                ctx.lineTo(last_line(i).x2 - 2.5, last_line(i).y2);
+                ctx.fill();
+            }
         }
         for (let j = 0; j < lines[i].length; j++) {
             ctx.beginPath();
