@@ -40,6 +40,8 @@ function set_line(player, new_dir, x, y) {
     }
     if (new_dir >= END_OF_LINE) {
         console.log("Line ended: " + player);
+        last_line(player).x2 = x;
+        last_line(player).y2 = y;
         last_line(player).direction += END_OF_LINE;
     }
     else if (player >= lines.length) {

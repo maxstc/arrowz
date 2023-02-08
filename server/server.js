@@ -263,7 +263,7 @@ function send_players_to_newest_player() {
     let player = websockets.length - 1;
     for (let i = 0; i < lines.length - 1; i++) {
         
-        websockets[player].send(i + "," + lines[i][0].direction + "," + lines[i][0].x1 + "," + lines[i][0].y1);
+        websockets[player].send(i + "," + (lines[i][0].direction % 4) + "," + lines[i][0].x1 + "," + lines[i][0].y1);
         for (let j = 0; j < lines[i].length - 1; j++) {
             websockets[player].send(i + "," + lines[i][j + 1].direction + "," + lines[i][j].x2 + "," + lines[i][j].y2);
         }
