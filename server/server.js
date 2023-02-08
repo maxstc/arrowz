@@ -96,6 +96,9 @@ function is_between(a, b, c) {
 
 function is_game_over(player) {
     if (last_line(player).direction >= END_OF_LINE || isNaN(last_line(player).direction)) {
+        if (isNaN(last_line(player).direction)) {
+            console.log("WAAAAAAAAAAA");
+        }
         return false;
     }
 
@@ -265,7 +268,7 @@ function send_players_to_newest_player() {
         
         websockets[player].send(i + "," + (lines[i][0].direction % 4) + "," + lines[i][0].x1 + "," + lines[i][0].y1);
         for (let j = 0; j < lines[i].length - 1; j++) {
-            websockets[player].send(i + "," + lines[i][j + 1].direction + "," + lines[i][j].x2 + "," + lines[i][j].y2);
+            websockets[player].send(i + "," + (lines[i][j + 1].direction % 4) + "," + lines[i][j].x2 + "," + lines[i][j].y2);
         }
         websockets[player].send(i + "," + last_line(i).direction + "," + last_line(i).x2 + "," + last_line(i).y2);
     }
