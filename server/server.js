@@ -32,7 +32,7 @@ function turn(player, type) {
 
 function end_line(player) {
     last_line(player).direction += END_OF_LINE;
-    notify(player, END_OF_LINE, last_line(player).x2, last_line(player).x2);
+    notify(player, END_OF_LINE, last_line(player).x2, last_line(player).y2);
 }
 
 function start_line() {
@@ -95,7 +95,7 @@ function is_between(a, b, c) {
 }
 
 function is_game_over(player) {
-    if (last_line(player).direction >= END_OF_LINE) {
+    if (last_line(player).direction >= END_OF_LINE || isNaN(last_line(player).direction)) {
         return false;
     }
 
