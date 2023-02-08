@@ -13,6 +13,10 @@ runs on port 41399
 ## how to play
 press `a` to turn left, and `d` to turn right
 
+if your triangle hits a line (yours or your enemies') then you lose
+
+try to avoid the line behind your enemies and get your enemies to run into your line
+
 ## todo
 1. waiting room and start game button/restart game when everyone is gone
 2. change controls to wasd
