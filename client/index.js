@@ -142,7 +142,7 @@ function loop() {
     }
 }
 
-function start() {
+function start_loop() {
     setInterval(loop, 50);
 }
 
@@ -250,5 +250,5 @@ window.onload = () => {
             socket.send("r");
         }
     }
-    start();
+    start_loop();
 }

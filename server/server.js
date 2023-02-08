@@ -9,6 +9,8 @@ const fs = require("fs");
 
 ////////// GAME LOGIC //////////
 
+let running = false;
+
 let lines = [];
 const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
 let orders = [];
@@ -144,40 +146,42 @@ function is_game_over(player) {
 }
 
 function loop() {
-    for (let i = 0; i < orders.length; i++) {
-        if (orders[i] != 0 && last_line(i).direction < END_OF_LINE && !isNaN(last_line(i).direction)) {
-            turn(i, orders[i]);
+    if (running) {
+        for (let i = 0; i < orders.length; i++) {
+            if (orders[i] != 0 && last_line(i).direction < END_OF_LINE && !isNaN(last_line(i).direction)) {
+                turn(i, orders[i]);
+            }
+            orders[i] = 0;
         }
-        orders[i] = 0;
-    }
-
-    for (let i = 0; i < lines.length; i++) {
-        let direction = last_line(i).direction;
-        let id = lines.length;
-        if (direction === 0) {
-            last_line(i).y2 -= LINE_SPEED;
+    
+        for (let i = 0; i < lines.length; i++) {
+            let direction = last_line(i).direction;
+            let id = lines.length;
+            if (direction === 0) {
+                last_line(i).y2 -= LINE_SPEED;
+            }
+            else if (direction === 1) {
+                last_line(i).x2 += LINE_SPEED;
+            }
+            else if (direction === 2) {
+                last_line(i).y2 += LINE_SPEED;
+            }
+            else if (direction === 3) {
+                last_line(i).x2 -= LINE_SPEED;
+            }
         }
-        else if (direction === 1) {
-            last_line(i).x2 += LINE_SPEED;
-        }
-        else if (direction === 2) {
-            last_line(i).y2 += LINE_SPEED;
-        }
-        else if (direction === 3) {
-            last_line(i).x2 -= LINE_SPEED;
-        }
-    }
-
-    for(let i = 0; i < lines.length; i++) {
-        if (is_game_over(i)) {
-            console.log(i + " lost via an aburpt braking maneuver!");
-            end_line(i);
-            console.log(last_line(i));
+    
+        for(let i = 0; i < lines.length; i++) {
+            if (is_game_over(i)) {
+                console.log(i + " lost via an aburpt braking maneuver!");
+                end_line(i);
+                console.log(last_line(i));
+            }
         }
     }
 }
 
-function start() {
+function start_loop() {
     setInterval(loop, 50);
 }
 
@@ -233,6 +237,21 @@ const ws_server = new ws.WebSocketServer({ server: http_server });
 
 let websockets = [];
 
+function start() {
+    console.log("starting");
+    for (let i = 0; i < websockets.length; i++) {
+        running = true;
+        websockets[i].send("start");
+    }
+}
+
+function stop() {
+    console.log("starting");
+    for (let i = 0; i < websockets.length; i++) {
+        websockets[i].send("stop");
+    }
+}
+
 ws_server.on("connection", (websocket) => {
     websockets.push(websocket);
     let id = websockets.length - 1;
@@ -248,16 +267,10 @@ ws_server.on("connection", (websocket) => {
             orders[id] = 1;
         }
         else if (msg === "start") {
-            console.log("starting");
-            for (let i = 0; i < websockets.length; i++) {
-                websockets[i].send("start");
-            }
+            start();
         }
         else if (msg === "stop") {
-            console.log("starting");
-            for (let i = 0; i < websockets.length; i++) {
-                websockets[i].send("stop");
-            }
+            stop();
         }
         else {
             console.log("bad message:" + msg);
@@ -286,6 +299,6 @@ function send_players_to_newest_player() {
     }
 }
 
-start();
+start_loop();
 
 http_server.listen(41399);
