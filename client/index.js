@@ -16,6 +16,7 @@ let my_id = -1;
 let lines = [];
 const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
 let ctx = 0;
+let player_info = 0;
 
 // function turn(player, type) {
 //     console.log("turning!" + player + "," + type);
@@ -224,6 +225,9 @@ function openSocket() {
         else if (e.data + "" === "stop") {
             stop();
         }
+        else if ((e.data + "").charAt(0) === "r") {
+            player_info.innerHTML = (e.data + "").substring(1) + " players ready";
+        }
         else {
             read_notify(e.data);
         }
@@ -252,17 +256,21 @@ window.onload = () => {
     ready_button.innerHTML = "Not Ready";
     ready_button.removeAttribute("disabled");
 
+    player_info = document.getElementsByTagName("p")[0];
+
     ready_button.onclick = () => {
         ready_button.setAttribute("disabled", "");
         if (ready) {
             ready_button.style.color = "red";
             ready_button.innerHTML = "Not Ready";
             ready = false;
+            socket.send(UNREADY_MSG);
         }
         else {
             ready_button.style.color = "green";
             ready_button.innerHTML = "Ready";
             ready = true;
+            socket.send(READY_MSG);
         }
         ready_button.removeAttribute("disabled");
     }

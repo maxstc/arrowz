@@ -10,6 +10,8 @@ const UNREADY_MSG = "n";
 const LEFT_MSG = "l";
 const RIGHT_MSG = "r";
 
+const READY_PREFIX = "r";
+
 const http = require("http");
 const ws = require("ws");
 const fs = require("fs");
@@ -17,8 +19,6 @@ const fs = require("fs");
 ////////// GAME LOGIC //////////
 
 let running = false;
-
-let ready = [];
 
 let lines = [];
 const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
@@ -245,6 +245,23 @@ const http_server = http.createServer((req, res) => {
 const ws_server = new ws.WebSocketServer({ server: http_server });
 
 let websockets = [];
+let ready = [];
+
+function get_num_ready() {
+    let total = 0;
+    for (let i = 0; i < ready.length; i++) {
+        if (ready[i]) {
+            total++;
+        }
+    }
+    return total;
+}
+
+function send_to_all(msg) {
+    for (let i = 0; i < websockets.length; i++) {
+        websockets[i].send(msg);
+    }
+}
 
 function start() {
     console.log("starting");
@@ -269,8 +286,11 @@ ws_server.on("connection", (websocket) => {
     send_players_to_newest_player();
     console.log(id + " connected");
     ready.push(false);
+    let num_ready = get_num_ready();
+    send_to_all("r" + num_ready + "/" + ready.length);
     websocket.on("message", (data) => {
         let msg = "" + data;
+        console.log("GOT:" + msg);
         if (msg === LEFT_MSG) {
             orders[id] = -1;
         }
@@ -279,9 +299,18 @@ ws_server.on("connection", (websocket) => {
         }
         else if (msg === READY_MSG) {
             ready[id] = true;
+            let num_ready = get_num_ready();
+            if (num_ready === ready.length) {
+                //start game
+            }
+            else {
+                send_to_all("r" + num_ready + "/" + ready.length);
+            }
         }
         else if (msg === UNREADY_MSG) {
             ready[id] = false;
+            let num_ready = get_num_ready();
+            send_to_all("r" + num_ready + "/" + ready.length);
         }
         else if (msg === "start") {
             start();
