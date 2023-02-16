@@ -228,6 +228,9 @@ function openSocket() {
         else if ((e.data + "").charAt(0) === "r") {
             player_info.innerHTML = (e.data + "").substring(1) + " players ready";
         }
+        else if ((e.data + "") === "plzwait") {
+            alert("Game is already running, please try again after it ends");
+        }
         else {
             read_notify(e.data);
         }

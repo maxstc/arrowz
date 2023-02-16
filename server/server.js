@@ -23,6 +23,12 @@ let running = false;
 let lines = [];
 const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
 let orders = [];
+const starting_positions = [
+    [1, 350, 350],
+    [2, 450, 350],
+    [3, 450, 450],
+    [0, 350, 450]
+];
 
 //  0
 //3   1
@@ -264,64 +270,78 @@ function send_to_all(msg) {
 }
 
 function start() {
+    running = true;
     console.log("starting");
-    for (let i = 0; i < websockets.length; i++) {
-        running = true;
-        websockets[i].send("start");
+
+    for(let i = 0; i < websockets.length; i++) {
+        lines.push([]);
+        lines[i].push({
+            x1: starting_positions[i][1],
+            y1: starting_positions[i][2],
+            x2: starting_positions[i][1],
+            y2: starting_positions[i][2],
+            direction: starting_positions[i][0]
+        });
     }
+    
+    for (let i = 0; i < websockets.length; i++) {
+        //send player i their starting position
+        notify(i, lines[i][0].direction, lines[i][0].x1, lines[i][0].y1);
+        for (let j = 0; j < websockets.length; j++) {
+            if (j != i) {
+                //send starting position for player j to player i
+                notify(i, lines[j][0].direction, lines[j][0].x1, lines[j][0].y1);
+            }
+        }
+    }
+
+    send_to_all("start");
 }
 
 function stop() {
-    console.log("starting");
-    for (let i = 0; i < websockets.length; i++) {
-        websockets[i].send("stop");
-    }
+    console.log("stop");
 }
 
 ws_server.on("connection", (websocket) => {
-    //CHECK IF GAME IS CURRENTLY RUNNING
-    websockets.push(websocket);
-    let id = websockets.length - 1;
-    start_line();
-    send_players_to_newest_player();
-    console.log(id + " connected");
-    ready.push(false);
-    let num_ready = get_num_ready();
-    send_to_all("r" + num_ready + "/" + ready.length);
-    websocket.on("message", (data) => {
-        let msg = "" + data;
-        console.log("GOT:" + msg);
-        if (msg === LEFT_MSG) {
-            orders[id] = -1;
-        }
-        else if (msg === RIGHT_MSG) {
-            orders[id] = 1;
-        }
-        else if (msg === READY_MSG) {
-            ready[id] = true;
-            let num_ready = get_num_ready();
-            if (num_ready === ready.length) {
-                //start game
+    if (!running && websockets.length < 4) {
+        websockets.push(websocket);
+        let id = websockets.length - 1;
+        console.log(id + " connected");
+        ready.push(false);
+        let num_ready = get_num_ready();
+        send_to_all("r" + num_ready + "/" + ready.length);
+        websocket.on("message", (data) => {
+            let msg = "" + data;
+            console.log("GOT:" + msg);
+            if (msg === LEFT_MSG && running) {
+                orders[id] = -1;
             }
-            else {
+            else if (msg === RIGHT_MSG && running) {
+                orders[id] = 1;
+            }
+            else if (msg === READY_MSG && !running) {
+                ready[id] = true;
+                let num_ready = get_num_ready();
+                if (num_ready === ready.length) {
+                    start();
+                }
+                else {
+                    send_to_all("r" + num_ready + "/" + ready.length);
+                }
+            }
+            else if (msg === UNREADY_MSG && !running) {
+                ready[id] = false;
+                let num_ready = get_num_ready();
                 send_to_all("r" + num_ready + "/" + ready.length);
             }
-        }
-        else if (msg === UNREADY_MSG) {
-            ready[id] = false;
-            let num_ready = get_num_ready();
-            send_to_all("r" + num_ready + "/" + ready.length);
-        }
-        else if (msg === "start") {
-            start();
-        }
-        else if (msg === "stop") {
-            stop();
-        }
-        else {
-            console.log("bad message:" + msg);
-        }
-    });
+            else {
+                console.log("bad message:" + msg);
+            }
+        });
+    }
+    else {
+        websocket.send("plzwait");
+    }
 });
 
 function notify(player, dir, x, y) {
