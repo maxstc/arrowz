@@ -6,7 +6,7 @@ const LINE_SPEED = 1;
 const OBSERVER_ID = -2;
 
 const READY_MSG = "y";
-const UNREADTY_MSG = "n";
+const UNREADY_MSG = "n";
 const LEFT_MSG = "l";
 const RIGHT_MSG = "r";
 
@@ -17,6 +17,8 @@ const fs = require("fs");
 ////////// GAME LOGIC //////////
 
 let running = false;
+
+let ready = [];
 
 let lines = [];
 const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
@@ -260,11 +262,13 @@ function stop() {
 }
 
 ws_server.on("connection", (websocket) => {
+    //CHECK IF GAME IS CURRENTLY RUNNING
     websockets.push(websocket);
     let id = websockets.length - 1;
     start_line();
     send_players_to_newest_player();
     console.log(id + " connected");
+    ready.push(false);
     websocket.on("message", (data) => {
         let msg = "" + data;
         if (msg === LEFT_MSG) {
@@ -272,6 +276,12 @@ ws_server.on("connection", (websocket) => {
         }
         else if (msg === RIGHT_MSG) {
             orders[id] = 1;
+        }
+        else if (msg === READY_MSG) {
+            ready[id] = true;
+        }
+        else if (msg === UNREADY_MSG) {
+            ready[id] = false;
         }
         else if (msg === "start") {
             start();

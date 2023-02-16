@@ -4,7 +4,7 @@ const END_OF_LINE = 4;
 const LINE_SPEED = 1;
 
 const READY_MSG = "y";
-const UNREADTY_MSG = "n";
+const UNREADY_MSG = "n";
 const LEFT_MSG = "l";
 const RIGHT_MSG = "r";
 
