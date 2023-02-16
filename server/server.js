@@ -290,7 +290,7 @@ function start() {
         for (let j = 0; j < websockets.length; j++) {
             if (j != i) {
                 //send starting position for player j to player i
-                notify(i, lines[j][0].direction, lines[j][0].x1, lines[j][0].y1);
+                notify(j, lines[j][0].direction, lines[j][0].x1, lines[j][0].y1);
             }
         }
     }
