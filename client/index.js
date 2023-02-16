@@ -281,10 +281,13 @@ window.onload = () => {
     ctx = document.getElementById("canvas").getContext("2d");
     openSocket();
     window.onkeydown = (key) => {
+        console.log("KEY");
         if (key.code === left_key) {
+            console.log("LEFT");
             socket.send(LEFT_MSG);
         }
         else if (key.code === right_key) {
+            console.log("RIGHT");
             socket.send(RIGHT_MSG);
         }
     }

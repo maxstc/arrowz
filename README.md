@@ -22,3 +22,6 @@ try to avoid the line behind your enemies and get your enemies to run into your 
 2. change controls to wasd
 3. menu where you can set settings (stored in cookies?)
 4. cookie to reconnect?
+
+## known issues
+if you connect to the server more than once on the same systems sometimes it thinks your direction is NaN (I think it has to do with having two websocket connections in two windows on the same browser to the same server)
