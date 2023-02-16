@@ -3,6 +3,8 @@ const RIGHT = 1;
 const END_OF_LINE = 4;
 const LINE_SPEED = 1;
 
+const OBSERVER_ID = -2;
+
 const http = require("http");
 const ws = require("ws");
 const fs = require("fs");

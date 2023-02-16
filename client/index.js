@@ -5,6 +5,8 @@ const LINE_SPEED = 1;
 
 let running = false;
 
+let ready = false;
+
 let my_id = -1;
 let lines = [];
 const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
@@ -240,6 +242,26 @@ let left_key = "KeyA";
 let right_key = "KeyD";
 
 window.onload = () => {
+    let ready_button = document.getElementById("readybutton");
+    ready_button.style.color = "red";
+    ready_button.innerHTML = "Not Ready";
+    ready_button.removeAttribute("disabled");
+
+    ready_button.onclick = () => {
+        ready_button.setAttribute("disabled", "");
+        if (ready) {
+            ready_button.style.color = "red";
+            ready_button.innerHTML = "Not Ready";
+            ready = false;
+        }
+        else {
+            ready_button.style.color = "green";
+            ready_button.innerHTML = "Ready";
+            ready = true;
+        }
+        ready_button.removeAttribute("disabled");
+    }
+
     ctx = document.getElementById("canvas").getContext("2d");
     openSocket();
     window.onkeydown = (key) => {
