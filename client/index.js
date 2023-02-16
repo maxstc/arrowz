@@ -3,6 +3,11 @@ const RIGHT = 1;
 const END_OF_LINE = 4;
 const LINE_SPEED = 1;
 
+const READY_MSG = "y";
+const UNREADTY_MSG = "n";
+const LEFT_MSG = "l";
+const RIGHT_MSG = "r";
+
 let running = false;
 
 let ready = false;
@@ -266,10 +271,10 @@ window.onload = () => {
     openSocket();
     window.onkeydown = (key) => {
         if (key.code === left_key) {
-            socket.send("l");
+            socket.send(LEFT_MSG);
         }
         else if (key.code === right_key) {
-            socket.send("r");
+            socket.send(RIGHT_MSG);
         }
     }
     start_loop();

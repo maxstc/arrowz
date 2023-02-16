@@ -5,6 +5,11 @@ const LINE_SPEED = 1;
 
 const OBSERVER_ID = -2;
 
+const READY_MSG = "y";
+const UNREADTY_MSG = "n";
+const LEFT_MSG = "l";
+const RIGHT_MSG = "r";
+
 const http = require("http");
 const ws = require("ws");
 const fs = require("fs");
@@ -262,10 +267,10 @@ ws_server.on("connection", (websocket) => {
     console.log(id + " connected");
     websocket.on("message", (data) => {
         let msg = "" + data;
-        if (msg === "l") {
+        if (msg === LEFT_MSG) {
             orders[id] = -1;
         }
-        else if (msg === "r") {
+        else if (msg === RIGHT_MSG) {
             orders[id] = 1;
         }
         else if (msg === "start") {
