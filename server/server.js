@@ -52,57 +52,6 @@ function end_line(player) {
     notify(player, END_OF_LINE, last_line(player).x2, last_line(player).y2);
 }
 
-function start_line() {
-    let id = lines.length;
-    lines.push([]);
-    if (id === 0) {
-        lines[id].push({
-            x1: 350,
-            y1: 350,
-            x2: 350,
-            y2: 350,
-            direction: 1
-        });
-    }
-    else if (id === 1) {
-        lines[id].push({
-            x1: 450,
-            y1: 350,
-            x2: 450,
-            y2: 350,
-            direction: 2
-        });
-    }
-    else if (id === 2) {
-        lines[id].push({
-            x1: 450,
-            y1: 450,
-            x2: 450,
-            y2: 450,
-            direction: 3
-        });
-    }
-    else if (id === 3) {
-        lines[id].push({
-            x1: 350,
-            y1: 450,
-            x2: 350,
-            y2: 450,
-            direction: 0
-        });
-    }
-    else {
-        lines[id].push({
-            x1: 0,
-            y1: 0,
-            x2: 0,
-            y2: 0,
-            direction: 0
-        });
-    }
-    notify(id, last_line(id).direction, last_line(id).x1, last_line(id).y1);
-}
-
 function last_line(player) {
     return lines[player][lines[player].length - 1];
 }
