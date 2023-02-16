@@ -18,7 +18,7 @@ if your triangle hits a line (yours or your enemies') then you lose
 try to avoid the line behind your enemies and get your enemies to run into your line
 
 ## todo
-1. fix NaN direction issue
+1. fix multiple connection NaN direction issue
 2. change controls to wasd
 3. menu where you can set settings (stored in cookies?)
 4. cookie to reconnect?
