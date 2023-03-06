@@ -112,6 +112,9 @@ function is_game_over(player) {
 function loop() {
     if (running) {
         for (let i = 0; i < orders.length; i++) {
+            if (orders[i] === undefined) {
+                orders[i] = 0;
+            }
             if (orders[i] != 0 && last_line(i).direction < END_OF_LINE && !isNaN(last_line(i).direction)) {
                 turn(i, orders[i]);
             }
