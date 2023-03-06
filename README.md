@@ -18,6 +18,8 @@ if your triangle hits a line (yours or your enemies') then you lose
 try to avoid the line behind your enemies and get your enemies to run into your line
 
 ## todo
-1. option to change controls to wasd
-2. menu where you can set settings (stored in cookies?)
-3. cookie to reconnect?
+1. wait 3 seconds after everyone is ready to start game
+2. display winner after everyone dies
+3. auto reset lobby 3 seconds after everyone dies
+4. menu where you can set settings (stored in cookies?)
+5. cookie to reconnect?
