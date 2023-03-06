@@ -275,6 +275,7 @@ ws_server.on("connection", (websocket) => {
                 ready[id] = true;
                 let num_ready = get_num_ready();
                 if (num_ready === ready.length) {
+                    send_to_all("r" + "!");
                     setTimeout(start, 3000);
                 }
                 else {

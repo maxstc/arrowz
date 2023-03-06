@@ -232,7 +232,13 @@ function openSocket() {
             stop();
         }
         else if ((e.data + "").charAt(0) === "r") {
-            player_info.innerHTML = (e.data + "").substring(1) + " players ready";
+            if ((e.data + "").charAt(1) == "!") {
+                player_info.innerHTML = "Game will start in 3 seconds";
+                ready_button.setAttribute("disabled", "");
+            }
+            else {
+                player_info.innerHTML = (e.data + "").substring(1) + " players ready";
+            }
         }
         else if ((e.data + "") === "plzwait") {
             alert("Game is already running, please try again after it ends");
