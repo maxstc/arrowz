@@ -18,6 +18,8 @@ const colors = ["red", "blue", "green", "yellow", "magenta", "cyan"];
 let ctx = 0;
 let player_info = 0;
 
+let ready_button;
+
 // function turn(player, type) {
 //     console.log("turning!" + player + "," + type);
 //     if (type === 2) {
@@ -42,6 +44,9 @@ let player_info = 0;
 
 function start() {
     console.log("starting");
+    ready_button.style.color = "gray";
+    ready_button.setAttribute("disabled", "");
+    ready_button.innerHTML = "In Game";
     running = true;
 }
 
@@ -219,6 +224,7 @@ function openSocket() {
     };
 
     socket.onmessage = function(e) {
+        console.log("GOT:" + e.data);
         if (e.data + "" === "start") {
             start();
         }
@@ -254,7 +260,7 @@ let left_key = "KeyA";
 let right_key = "KeyD";
 
 window.onload = () => {
-    let ready_button = document.getElementById("readybutton");
+    ready_button = document.getElementById("readybutton");
     ready_button.style.color = "red";
     ready_button.innerHTML = "Not Ready";
     ready_button.removeAttribute("disabled");
