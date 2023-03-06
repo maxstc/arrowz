@@ -60,6 +60,7 @@ function set_line(player, new_dir, x, y) {
     if (my_id === -1) {
         console.log("Connected as:" + player);
         my_id = player;
+        document.getElementById("canvas").style.borderColor = colors[my_id];
         for(let i = 0; i < my_id + 1; i++) {
             lines.push([]);
         }

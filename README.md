@@ -21,5 +21,6 @@ try to avoid the line behind your enemies and get your enemies to run into your 
 1. display winner after everyone dies
 2. auto reset lobby 3 seconds after everyone dies
 3. nicer countdowns
-4. menu where you can set settings (stored in cookies?)
-5. cookie to reconnect?
+4. show starting position before game start
+5. menu where you can set settings (stored in cookies?)
+6. cookie to reconnect?
