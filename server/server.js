@@ -61,10 +61,7 @@ function is_between(a, b, c) {
 }
 
 function is_game_over(player) {
-    if (last_line(player).direction >= END_OF_LINE || isNaN(last_line(player).direction)) {
-        // if (isNaN(last_line(player).direction)) {
-        //     console.log("WAAAAAAAAAAA");
-        // }
+    if (last_line(player).direction >= END_OF_LINE) {
         return false;
     }
 
@@ -115,7 +112,7 @@ function loop() {
             if (orders[i] === undefined) {
                 orders[i] = 0;
             }
-            if (orders[i] != 0 && last_line(i).direction < END_OF_LINE && !isNaN(last_line(i).direction)) {
+            if (orders[i] != 0 && last_line(i).direction < END_OF_LINE) {
                 turn(i, orders[i]);
             }
             orders[i] = 0;
