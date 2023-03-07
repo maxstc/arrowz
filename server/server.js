@@ -297,6 +297,7 @@ ws_server.on("connection", (websocket) => {
 });
 
 function set_ws_game(id, websocket) {
+    websocket.removeAllListeners()
     websocket.on("message", (data) => {
         let msg = data + "";
         if (msg === LEFT_MSG) {
@@ -320,6 +321,7 @@ function set_ws_game(id, websocket) {
 }
 
 function set_ws_ready(id, websocket) {
+    websocket.removeAllListeners()
     websocket.on("message", (data) => {
         let msg = "" + data;
         if (msg === READY_MSG) {
