@@ -18,9 +18,12 @@ if your triangle hits a line (yours or your enemies') then you lose
 try to avoid the line behind your enemies and get your enemies to run into your line
 
 ## todo
-1. display winner after everyone dies
-2. auto reset lobby 3 seconds after everyone dies
-3. nicer countdowns
-4. show starting position before game start
-5. menu where you can set settings (stored in cookies?)
-6. cookie to reconnect?
+1. fix server telling client who they are
+2. make client structure mimic server structure
+3. make lobby resets work for client
+4. display winner after everyone dies
+5. auto reset lobby 3 seconds after everyone dies
+6. nicer countdowns
+7. show starting position before game start
+8. menu to set settings that are stored as cookies
+9. cookie to reconnect

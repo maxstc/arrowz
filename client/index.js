@@ -167,16 +167,25 @@ let socket = 0;
 function openSocket() {
     socket = new WebSocket("ws://" + window.location.host);
 
+    //Should be able to just reassign socket.onopen and socket.onmessage as needed
+
     socket.onopen = function(e) {
         console.log("started");
     };
 
     socket.onmessage = function(e) {
-        console.log("GOT:" + e.data);
-        if (e.data + "" === "start") {
+        let msg = e.data + "";
+        if (msg === "start") {
             start();
         }
-        else if (e.data + "" === "stop") {
+        else if (msg.substring(0,4) === "stop") {
+            let winner = msg.substring(4)
+            if (winner === "") {
+                player_info.innerHTML = "Game ended in a tie";
+            }
+            else {
+                player_info.innerHTML = "Winner is: " + colors[parseInt(winner)];
+            }
             stop();
         }
         else if ((e.data + "").charAt(0) === "r") {
