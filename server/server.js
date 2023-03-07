@@ -90,19 +90,6 @@ function is_game_over(player) {
         }
     }
 
-    // for(let i = 0; i < lines.length; i++) {
-    //     let limit = lines[i].length - ((i === player) ? 1 : 0);
-    //     for(let j = 0; j < limit; j++) {
-    //         let line_direction = lines[i][j].direction % 8;
-    //         if (line_direction % 2 === last_line(player).direction % 2) {
-    //             return false;
-    //         }
-
-    //         if (line_direction === 0) {
-
-    //         }
-    //     }
-    // }
     return false;
 }
 
@@ -135,12 +122,29 @@ function loop() {
             }
         }
     
-        for(let i = 0; i < lines.length; i++) {
+        for (let i = 0; i < lines.length; i++) {
             if (is_game_over(i)) {
                 console.log(i + " lost via an aburpt braking maneuver!");
                 end_line(i);
                 console.log(last_line(i));
             }
+        }
+
+        let alive_player = -1;
+        let game_is_over = true;
+        for (let i = 0; i < lines.length; i++) {
+            if (last_line(i).direction < END_OF_LINE) {
+                if (alive_player != -1) {
+                    game_is_over = false;
+                }
+                else {
+                    alive_player = i;
+                }
+            }
+        }
+
+        if (game_is_over === true) {
+            stop(alive_player);
         }
     }
 }
@@ -205,8 +209,10 @@ let ready = [];
 function get_num_ready() {
     let total = 0;
     for (let i = 0; i < ready.length; i++) {
-        if (ready[i]) {
-            total++;
+        if (ready[i] != undefined) {
+            if (ready[i]) {
+                total++;
+            }
         }
     }
     return total;
@@ -222,7 +228,12 @@ function start() {
     running = true;
     console.log("starting");
 
-    for(let i = 0; i < websockets.length; i++) {
+    for (let i = 0; i < websockets.length; i++) {
+        let id = i;
+        set_ws_game(id, websockets[i]);
+    }
+
+    for (let i = 0; i < websockets.length; i++) {
         lines.push([]);
         lines[i].push({
             x1: starting_positions[i][1],
@@ -247,8 +258,27 @@ function start() {
     send_to_all("start");
 }
 
-function stop() {
-    console.log("stop");
+function stop(winner) {
+    running = false;
+    
+    console.log("stop, winner is:" + winner);
+    if (winner == -1) {
+        send_to_all("stop");
+    }
+    else {
+        send_to_all("stop" + winner);
+    }
+
+    lines = [];
+    ready = [];
+
+    for (let i = 0; i < websockets.length; i++) {
+        ready.push(false);
+        set_ws_ready(i, websockets[i]);
+    }
+
+    let num_ready = get_num_ready();
+    send_to_all("r" + num_ready + "/" + ready.length);
 }
 
 ws_server.on("connection", (websocket) => {
@@ -259,40 +289,70 @@ ws_server.on("connection", (websocket) => {
         ready.push(false);
         let num_ready = get_num_ready();
         send_to_all("r" + num_ready + "/" + ready.length);
-        websocket.on("message", (data) => {
-            let msg = "" + data;
-            console.log("GOT:" + msg);
-            if (msg === LEFT_MSG && running) {
-                orders[id] = -1;
-            }
-            else if (msg === RIGHT_MSG && running) {
-                orders[id] = 1;
-            }
-            else if (msg === READY_MSG && !running) {
-                ready[id] = true;
-                let num_ready = get_num_ready();
-                if (num_ready === ready.length) {
-                    send_to_all("r" + "!");
-                    setTimeout(start, 3000);
-                }
-                else {
-                    send_to_all("r" + num_ready + "/" + ready.length);
-                }
-            }
-            else if (msg === UNREADY_MSG && !running) {
-                ready[id] = false;
-                let num_ready = get_num_ready();
-                send_to_all("r" + num_ready + "/" + ready.length);
-            }
-            else {
-                console.log("bad message:" + msg);
-            }
-        });
+        set_ws_ready(id, websocket);
     }
     else {
         websocket.send("plzwait");
     }
 });
+
+function set_ws_game(id, websocket) {
+    websocket.on("message", (data) => {
+        let msg = data + "";
+        if (msg === LEFT_MSG) {
+            orders[id] = -1;
+        }
+        else if (msg === RIGHT_MSG) {
+            orders[id] = 1;
+        }
+        else {
+            console.log("bad ingame message:" + msg);
+        }
+    });
+    websocket.on("close", () => {
+        console.log(id + " disconnected");
+        websockets.splice(id, 1);
+    });
+    websocket.on("error", () => {
+        console.log(id + " error, disconnected");
+        websockets.splice(id, 1);
+    });
+}
+
+function set_ws_ready(id, websocket) {
+    websocket.on("message", (data) => {
+        let msg = "" + data;
+        if (msg === READY_MSG) {
+            ready[id] = true;
+            let num_ready = get_num_ready();
+            if (num_ready === ready.length) {
+                send_to_all("r" + "!");
+                setTimeout(start, 3000);
+            }
+            else {
+                send_to_all("r" + num_ready + "/" + ready.length);
+            }
+        }
+        else if (msg === UNREADY_MSG) {
+            ready[id] = false;
+            let num_ready = get_num_ready();
+            send_to_all("r" + num_ready + "/" + ready.length);
+        }
+        else {
+            console.log("bad ready message:" + msg);
+        }
+    });
+    websocket.on("close", () => {
+        console.log(id + " disconnected");
+        websockets.splice(id, 1);
+        ready.splice(id, 1);
+    });
+    websocket.on("error", () => {
+        console.log(id + " error, disconnected");
+        websockets.splice(id, 1);
+        ready.splice(id, 1);
+    });
+}
 
 function notify(player, dir, x, y) {
     console.log("notifying!%s,%s,%s,%s", player, dir, x, y);
