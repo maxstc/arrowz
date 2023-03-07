@@ -245,14 +245,11 @@ function start() {
     }
     
     for (let i = 0; i < websockets.length; i++) {
-        //send player i their starting position
+        websockets[i].send("ur" + i);
+    }
+
+    for (let i = 0; i < websockets.length; i++) {
         notify(i, lines[i][0].direction, lines[i][0].x1, lines[i][0].y1);
-        for (let j = 0; j < websockets.length; j++) {
-            if (j != i) {
-                //send starting position for player j to player i
-                notify(j, lines[j][0].direction, lines[j][0].x1, lines[j][0].y1);
-            }
-        }
     }
 
     send_to_all("start");
