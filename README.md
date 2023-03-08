@@ -1,10 +1,15 @@
 ## How to Play
 Default controls:
-    Press `a` to turn left, press `d` to turn right
+
+- Press `a` to turn left, press `d` to turn right
+
 Absolute controls:
-    Press `w` to go up, `a` to go left, `s` to go down, or `d` to go right
+
+- Press `w` to go up, `a` to go left, `s` to go down, or `d` to go right
+
 Arrow keys:
-    Use arrow keys instead of `wasd`
+
+- Use arrow keys instead of `wasd`
 
 If your triangle hits a wall or a line (yours or your opponents'), you are out.
 
