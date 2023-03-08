@@ -20,10 +20,9 @@ try to avoid the line behind your enemies and get your enemies to run into your 
 1. fix server telling client who they are
 2. make client structure mimic server structure
 3. make lobby resets work for client
-4. display winner after everyone dies
-5. auto reset lobby 3 seconds after everyone dies
-6. nicer countdowns
-7. show starting position before game start
-8. menu to set settings that are stored as cookies
-9. cookie to reconnect
-10. cli arg to choose what port server runs on
+4. auto reset lobby 3 seconds after everyone dies
+5. nicer countdowns
+6. show starting position before game start
+7. menu to set settings that are stored as cookies
+8. cookie to reconnect
+9. cli arg to choose what port server runs on
