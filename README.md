@@ -15,7 +15,7 @@ If your triangle hits a wall or a line (yours or your opponents'), you are out.
 
 Be the last one to get out and you win!
 
-## How to run
+## How to Run
 0. port forward port 41399 if necessary
 1. install node.js
 2. run `npm install ws` from `arrowz/`
