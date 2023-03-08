@@ -274,7 +274,9 @@ function stop(winner) {
             ready.push(false);
             set_ws_ready(i, websockets[i]);
         }
-    
+        
+        send_to_all("reset");
+
         let num_ready = get_num_ready();
         send_to_all("r" + num_ready + "/" + ready.length);
     }, 3000);

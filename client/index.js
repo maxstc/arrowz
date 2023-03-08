@@ -34,6 +34,8 @@ function stop() {
     console.log("stopping");
     running = false;
     lines = [];
+    ctx.fillStyle = "gray";
+    ctx.fillRect(0, 0, 800, 800);
 }
 
 function set_line(player, new_dir, x, y) {
@@ -177,6 +179,7 @@ function openSocket() {
 
     socket.onmessage = function(e) {
         let msg = e.data + "";
+        console.log("MSG:" + msg);
         if (msg === "start") {
             start();
         }
@@ -197,7 +200,13 @@ function openSocket() {
             }
             stop();
         }
-        else if ((e.data + "").charAt(0) === "r") {
+        else if (msg === "reset") {
+            console.log("resetting!");
+            ready_button.removeAttribute("disabled");
+            ready_button.style.color = "red";
+            ready_button.innerHTML = "Not Ready";
+        }
+        else if (msg.charAt(0) === "r") {
             if ((e.data + "").charAt(1) == "!") {
                 player_info.innerHTML = "Game will start in 3 seconds";
                 ready_button.setAttribute("disabled", "");
@@ -209,7 +218,7 @@ function openSocket() {
                 player_info.innerHTML = (e.data + "").substring(1) + " players ready";
             }
         }
-        else if ((e.data + "") === "plzwait") {
+        else if (msg === "plzwait") {
             alert("Game is already running, please try again after it ends");
         }
         else {
