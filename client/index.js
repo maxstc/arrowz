@@ -185,11 +185,15 @@ function openSocket() {
             if (winner === "") {
                 console.log("Tie");
                 player_info.innerHTML = "Game ended in a tie";
+                countdown_timer = 3;
+                countdown();
             }
             else {
                 console.log("Winner:" + winner);
                 let winner_color = colors[parseInt(winner)];
                 player_info.innerHTML = "Winner is: " + winner_color;
+                countdown_timer = 3;
+                countdown();
             }
             stop();
         }
