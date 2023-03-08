@@ -207,19 +207,8 @@ const http_server = http.createServer((req, res) => {
 const ws_server = new ws.WebSocketServer({ server: http_server });
 
 let websockets = [];
-let ready = [];
-
-function get_num_ready() {
-    let total = 0;
-    for (let i = 0; i < ready.length; i++) {
-        if (ready[i] != undefined) {
-            if (ready[i]) {
-                total++;
-            }
-        }
-    }
-    return total;
-}
+let num_ready = 0;
+let num_lobby = 0;
 
 function send_to_all(msg) {
     for (let i = 0; i < websockets.length; i++) {
@@ -272,18 +261,18 @@ function stop(winner) {
     }
 
     lines = [];
-    ready = [];
+    num_ready = 0;
+    num_lobby = 0;
 
     setTimeout(() => {
         for (let i = 0; i < websockets.length; i++) {
-            ready.push(false);
+            num_lobby++;
             set_ws_ready(i, websockets[i]);
         }
         
         send_to_all("reset");
 
-        let num_ready = get_num_ready();
-        send_to_all("r" + num_ready + "/" + ready.length);
+        send_to_all("r" + num_ready + "/" + num_lobby);
     }, END_GAME_COUNTDOWN_LENGTH * 1000);
 }
 
@@ -292,9 +281,8 @@ ws_server.on("connection", (websocket) => {
         websockets.push(websocket);
         let id = websockets.length - 1;
         console.log(id + " connected");
-        ready.push(false);
-        let num_ready = get_num_ready();
-        send_to_all("r" + num_ready + "/" + ready.length);
+        num_lobby++;
+        send_to_all("r" + num_ready + "/" + num_lobby);
         set_ws_ready(id, websocket);
     }
     else {
@@ -328,23 +316,24 @@ function set_ws_game(id, websocket) {
 
 function set_ws_ready(id, websocket) {
     websocket.removeAllListeners()
+    let is_ready = false;
     websocket.on("message", (data) => {
         let msg = "" + data;
-        if (msg === READY_MSG) {
-            ready[id] = true;
-            let num_ready = get_num_ready();
-            if (num_ready === ready.length) {
+        if (msg === READY_MSG && !is_ready) {
+            num_ready++;
+            is_ready = true;
+            if (num_ready === num_lobby && num_lobby > 1) {
                 send_to_all("r" + "!");
                 start();
             }
             else {
-                send_to_all("r" + num_ready + "/" + ready.length);
+                send_to_all("r" + num_ready + "/" + num_lobby);
             }
         }
-        else if (msg === UNREADY_MSG) {
-            ready[id] = false;
-            let num_ready = get_num_ready();
-            send_to_all("r" + num_ready + "/" + ready.length);
+        else if (msg === UNREADY_MSG && is_ready) {
+            is_ready = false;
+            num_ready--;
+            send_to_all("r" + num_ready + "/" + num_lobby);
         }
         else {
             console.log("bad ready message:" + msg);
@@ -353,12 +342,20 @@ function set_ws_ready(id, websocket) {
     websocket.on("close", () => {
         console.log(id + " disconnected");
         websockets.splice(id, 1);
-        ready.splice(id, 1);
+        num_lobby--;
+        if (is_ready) {
+            num_ready--;
+        }
+        send_to_all("r" + num_ready + "/" + num_lobby);
     });
     websocket.on("error", () => {
         console.log(id + " error, disconnected");
         websockets.splice(id, 1);
-        ready.splice(id, 1);
+        num_lobby--;
+        if (is_ready) {
+            num_ready--;
+        }
+        send_to_all("r" + num_ready + "/" + num_lobby);
     });
 }
 

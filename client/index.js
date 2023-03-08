@@ -39,6 +39,7 @@ function stop() {
     lines = [];
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, 800, 800);
+    ready = false;
 }
 
 function set_line(player, new_dir, x, y) {
@@ -296,7 +297,7 @@ window.onload = () => {
 }
 
 function countdown() {
-    if (countdown_timer >= 0) {
+    if (countdown_timer > 0) {
         ready_button.innerHTML = countdown_timer + "";
         countdown_timer--;
         setTimeout(countdown, 1000);
