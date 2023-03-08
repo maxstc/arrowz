@@ -21,8 +21,7 @@ try to avoid the line behind your enemies and get your enemies to run into your 
 2. make client structure mimic server structure
 3. make lobby resets work for client
 4. auto reset lobby 3 seconds after everyone dies
-5. nicer countdowns
-6. show starting position before game start
-7. menu to set settings that are stored as cookies
-8. cookie to reconnect
-9. cli arg to choose what port server runs on
+5. show starting position before game start
+6. menu to set settings that are stored as cookies
+7. cookie to reconnect
+8. cli arg to choose what port server runs on
