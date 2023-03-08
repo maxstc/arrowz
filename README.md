@@ -17,8 +17,5 @@ if your triangle hits a line (yours or your enemies') then you lose
 try to avoid the line behind your enemies and get your enemies to run into your line
 
 ## Todo
-1. fix server telling client who they are
-2. show starting position before game start
-3. menu to set settings that are stored as cookies
-4. cookie to reconnect
-5. cli arg to choose what port server runs on
+1. menu to set settings that are stored as cookies
+2. cli arg to choose what port server runs on
