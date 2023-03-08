@@ -31,6 +31,12 @@ button {
     width: 300px;
 }
 
+.leftbutton {
+    width: 150px;
+    font-size: 24px;
+    margin-left: 0px;
+}
+
 .rightbutton {
     width: 150px;
     font-size: 16px;
