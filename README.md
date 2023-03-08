@@ -17,6 +17,5 @@ if your triangle hits a line (yours or your enemies') then you lose
 try to avoid the line behind your enemies and get your enemies to run into your line
 
 ## Todo
-1. button for wasd
-2. menu to set settings that are stored as cookies
-3. cli arg to choose what port server runs on
+1. cli arg to choose what port server runs on
+2. store settings in cookies (might not bc cookies are evil apparently)
