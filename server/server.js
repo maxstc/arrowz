@@ -1,3 +1,9 @@
+let port = 41399;
+
+if (process.argv.length > 2) {
+    port = parseInt(process.argv[2]);
+}
+
 const LEFT = -1;
 const RIGHT = 1;
 const END_OF_LINE = 4;
@@ -382,4 +388,4 @@ function send_players_to_newest_player() {
 
 start_loop();
 
-http_server.listen(41399);
+http_server.listen(port);
