@@ -361,13 +361,15 @@ function toggle_turn() {
     }
     else {
         turn_button.innerHTML = "Turn";
-        if (key.code === left_key) {
-            console.log("LEFT");
-            socket.send(LEFT_MSG);
-        }
-        else if (key.code === right_key) {
-            console.log("RIGHT");
-            socket.send(RIGHT_MSG);
+        window.onkeydown = (key) => {
+            if (key.code === left_key) {
+                console.log("LEFT");
+                socket.send(LEFT_MSG);
+            }
+            else if (key.code === right_key) {
+                console.log("RIGHT");
+                socket.send(RIGHT_MSG);
+            }
         }
     }
     setting_turn = !setting_turn;
