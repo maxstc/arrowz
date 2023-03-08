@@ -27,6 +27,8 @@ let ctx = 0;
 let player_info = 0;
 
 let ready_button;
+let turn_button;
+let wasd_button;
 
 function start() {
     console.log("starting");
@@ -285,13 +287,13 @@ window.onload = () => {
         ready_button.removeAttribute("disabled");
     }
 
-    let turn_button = document.getElementById("turnbutton");
+    turn_button = document.getElementById("turnbutton");
 
     turn_button.onclick = () => {
         toggle_turn();
     }
 
-    let wasd_button = document.getElementById("wasdbutton");
+    wasd_button = document.getElementById("wasdbutton");
 
     wasd_button.onclick = () => {
         toggle_wasd();
@@ -315,12 +317,14 @@ window.onload = () => {
 
 function toggle_wasd() {
     if (setting_wasd) {
+        wasd_button.innerHTML = "Arrow Keys";
         up_key = "ArrowUp";
         left_key = "ArrowLeft";
         down_key = "ArrowDown";
         right_key = "ArrowRight";
     }
     else {
+        wasd_button.innerHTML = "WASD";
         let up_key = "KeyW";
         let left_key = "KeyA";
         let down_key = "KeyS";
@@ -331,6 +335,7 @@ function toggle_wasd() {
 
 function toggle_turn() {
     if (setting_turn) {
+        turn_button.innerHTML = "Absolute";
         window.onkeydown = (key) => {
             let target_dir = -1;
             if (key.code === up_key) {
@@ -355,6 +360,7 @@ function toggle_turn() {
         }
     }
     else {
+        turn_button.innerHTML = "Turn";
         if (key.code === left_key) {
             console.log("LEFT");
             socket.send(LEFT_MSG);
