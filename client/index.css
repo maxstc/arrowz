@@ -12,6 +12,15 @@ canvas {
     border: 5px black solid;
 }
 
+div.colparent {
+    display: flex;
+    width: 100%;
+}
+
+div.colparent > div.col {
+    flex: 1;
+}
+
 button {
     font-size: 40px;
     padding-left: 0;
@@ -19,6 +28,11 @@ button {
     margin-left: auto;
     margin-right: auto;
     display: block;
+}
+
+.rightbutton {
+    font-size: 16px;
+    margin-right: 0px;
 }
 
 p {
