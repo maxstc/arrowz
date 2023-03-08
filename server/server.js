@@ -257,7 +257,7 @@ function start() {
 
 function stop(winner) {
     running = false;
-    
+
     console.log("stop, winner is:" + winner);
     if (winner == -1) {
         send_to_all("stop");
@@ -269,13 +269,15 @@ function stop(winner) {
     lines = [];
     ready = [];
 
-    for (let i = 0; i < websockets.length; i++) {
-        ready.push(false);
-        set_ws_ready(i, websockets[i]);
-    }
-
-    let num_ready = get_num_ready();
-    send_to_all("r" + num_ready + "/" + ready.length);
+    setTimeout(() => {
+        for (let i = 0; i < websockets.length; i++) {
+            ready.push(false);
+            set_ws_ready(i, websockets[i]);
+        }
+    
+        let num_ready = get_num_ready();
+        send_to_all("r" + num_ready + "/" + ready.length);
+    }, 3000);
 }
 
 ws_server.on("connection", (websocket) => {

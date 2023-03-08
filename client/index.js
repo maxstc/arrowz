@@ -8,6 +8,8 @@ const UNREADY_MSG = "n";
 const LEFT_MSG = "l";
 const RIGHT_MSG = "r";
 
+let countdown_timer = 0;
+
 let running = false;
 
 let ready = false;
@@ -181,10 +183,13 @@ function openSocket() {
         else if (msg.substring(0,4) === "stop") {
             let winner = msg.substring(4)
             if (winner === "") {
+                console.log("Tie");
                 player_info.innerHTML = "Game ended in a tie";
             }
             else {
-                player_info.innerHTML = "Winner is: " + colors[parseInt(winner)];
+                console.log("Winner:" + winner);
+                let winner_color = colors[parseInt(winner)];
+                player_info.innerHTML = "Winner is: " + winner_color;
             }
             stop();
         }
@@ -192,6 +197,9 @@ function openSocket() {
             if ((e.data + "").charAt(1) == "!") {
                 player_info.innerHTML = "Game will start in 3 seconds";
                 ready_button.setAttribute("disabled", "");
+                ready_button.style.color = "gray";
+                countdown_timer = 3;
+                countdown();
             }
             else {
                 player_info.innerHTML = (e.data + "").substring(1) + " players ready";
@@ -261,4 +269,13 @@ window.onload = () => {
         }
     }
     start_loop();
+}
+
+function countdown() {
+    if (countdown_timer >= 0) {
+        ready_button.innerHTML = countdown_timer + "";
+        countdown_timer--;
+        setTimeout(countdown, 1000);
+    }
+
 }
