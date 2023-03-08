@@ -13,6 +13,9 @@ let END_GAME_COUNTDOWN_LENGTH = 3;
 
 let countdown_timer = 0;
 
+let setting_turn = true;
+let setting_wasd = true;
+
 let running = false;
 
 let ready = false;
@@ -252,7 +255,9 @@ function openSocket() {
     }
 }
 
+let up_key = "KeyW";
 let left_key = "KeyA";
+let down_key = "KeyS";
 let right_key = "KeyD";
 
 window.onload = () => {
@@ -280,6 +285,18 @@ window.onload = () => {
         ready_button.removeAttribute("disabled");
     }
 
+    let turn_button = document.getElementById("turnbutton");
+
+    turn_button.onclick = () => {
+        toggle_turn();
+    }
+
+    let wasd_button = document.getElementById("wasdbutton");
+
+    wasd_button.onclick = () => {
+        toggle_wasd();
+    }
+
     ctx = document.getElementById("canvas").getContext("2d");
     openSocket();
     window.onkeydown = (key) => {
@@ -294,6 +311,60 @@ window.onload = () => {
         }
     }
     start_loop();
+}
+
+function toggle_wasd() {
+    if (setting_wasd) {
+        up_key = "ArrowUp";
+        left_key = "ArrowLeft";
+        down_key = "ArrowDown";
+        right_key = "ArrowRight";
+    }
+    else {
+        let up_key = "KeyW";
+        let left_key = "KeyA";
+        let down_key = "KeyS";
+        let right_key = "KeyD";
+    }
+    setting_wasd = !setting_wasd;
+}
+
+function toggle_turn() {
+    if (setting_turn) {
+        window.onkeydown = (key) => {
+            let target_dir = -1;
+            if (key.code === up_key) {
+                target_dir = 0;
+            }
+            else if (key.code === left_key) {
+                target_dir = 3;
+            }
+            else if (key.code === down_key) {
+                target_dir = 2;
+            }
+            else if (key.code === right_key) {
+                target_dir = 1;
+            }
+            let current_dir = last_line(my_id).direction;
+            if ((current_dir + 1) % 4 === target_dir) {
+                socket.send("r");
+            }
+            else if ((target_dir + 1) % 4 === current_dir) {
+                socket.send("l");
+            }
+        }
+    }
+    else {
+        if (key.code === left_key) {
+            console.log("LEFT");
+            socket.send(LEFT_MSG);
+        }
+        else if (key.code === right_key) {
+            console.log("RIGHT");
+            socket.send(RIGHT_MSG);
+        }
+    }
+    setting_turn = !setting_turn;
 }
 
 function countdown() {
