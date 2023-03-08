@@ -225,7 +225,6 @@ function send_to_all(msg) {
 }
 
 function start() {
-    running = true;
     console.log("starting");
 
     for (let i = 0; i < websockets.length; i++) {
@@ -252,7 +251,10 @@ function start() {
         notify(i, lines[i][0].direction, lines[i][0].x1, lines[i][0].y1);
     }
 
-    send_to_all("start");
+    setTimeout(()=>{
+        running = true;
+        send_to_all("start");
+    }, 3000);
 }
 
 function stop(winner) {
@@ -330,7 +332,7 @@ function set_ws_ready(id, websocket) {
             let num_ready = get_num_ready();
             if (num_ready === ready.length) {
                 send_to_all("r" + "!");
-                setTimeout(start, 3000);
+                start();
             }
             else {
                 send_to_all("r" + num_ready + "/" + ready.length);

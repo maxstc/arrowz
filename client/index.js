@@ -42,7 +42,6 @@ function set_line(player, new_dir, x, y) {
     if (my_id === -1) {
         console.log("Connected as:" + player);
         my_id = player;
-        document.getElementById("canvas").style.borderColor = colors[my_id];
         for(let i = 0; i < my_id + 1; i++) {
             lines.push([]);
         }
@@ -119,6 +118,9 @@ function read_notify(notification) {
     parts[2] = Number(parts[2]);
     parts[3] = Number(parts[3]);
     set_line(parts[0], parts[1], parts[2], parts[3]);
+    if (running === false) {
+        draw();
+    }
 }
 
 function draw() {
@@ -202,9 +204,15 @@ function openSocket() {
         }
         else if (msg === "reset") {
             console.log("resetting!");
+            document.getElementById("canvas").style.borderColor = "black";
             ready_button.removeAttribute("disabled");
             ready_button.style.color = "red";
             ready_button.innerHTML = "Not Ready";
+        }
+        else if (msg.substring(0,2) === "ur") {
+            my_id = parseInt(msg.substring(2));
+            document.getElementById("canvas").style.borderColor = colors[my_id];
+            console.log("IAM:" + my_id);
         }
         else if (msg.charAt(0) === "r") {
             if ((e.data + "").charAt(1) == "!") {
