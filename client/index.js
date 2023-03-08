@@ -8,6 +8,9 @@ const UNREADY_MSG = "n";
 const LEFT_MSG = "l";
 const RIGHT_MSG = "r";
 
+let BEGIN_GAME_COUNTDOWN_LENGTH = 3;
+let END_GAME_COUNTDOWN_LENGTH = 3;
+
 let countdown_timer = 0;
 
 let running = false;
@@ -190,14 +193,14 @@ function openSocket() {
             if (winner === "") {
                 console.log("Tie");
                 player_info.innerHTML = "Game ended in a tie";
-                countdown_timer = 3;
+                countdown_timer = END_GAME_COUNTDOWN_LENGTH;
                 countdown();
             }
             else {
                 console.log("Winner:" + winner);
                 let winner_color = colors[parseInt(winner)];
                 player_info.innerHTML = "Winner is: " + winner_color;
-                countdown_timer = 3;
+                countdown_timer = END_GAME_COUNTDOWN_LENGTH;
                 countdown();
             }
             stop();
@@ -219,7 +222,7 @@ function openSocket() {
                 player_info.innerHTML = "Game will start in 3 seconds";
                 ready_button.setAttribute("disabled", "");
                 ready_button.style.color = "gray";
-                countdown_timer = 3;
+                countdown_timer = BEGIN_GAME_COUNTDOWN_LENGTH;
                 countdown();
             }
             else {

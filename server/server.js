@@ -12,6 +12,9 @@ const RIGHT_MSG = "r";
 
 const READY_PREFIX = "r";
 
+let BEGIN_GAME_COUNTDOWN_LENGTH = 3;
+let END_GAME_COUNTDOWN_LENGTH = 3;
+
 const http = require("http");
 const ws = require("ws");
 const fs = require("fs");
@@ -254,7 +257,7 @@ function start() {
     setTimeout(()=>{
         running = true;
         send_to_all("start");
-    }, 3000);
+    }, BEGIN_GAME_COUNTDOWN_LENGTH * 1000);
 }
 
 function stop(winner) {
@@ -281,7 +284,7 @@ function stop(winner) {
 
         let num_ready = get_num_ready();
         send_to_all("r" + num_ready + "/" + ready.length);
-    }, 3000);
+    }, END_GAME_COUNTDOWN_LENGTH * 1000);
 }
 
 ws_server.on("connection", (websocket) => {
