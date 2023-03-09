@@ -23,4 +23,5 @@ Be the last one to get out and you win!
 4. connect via `<your ip>:<port>` or `localhost:<port>` in your web browser (default port is `41399`)
 
 ## Todo
-1. store settings in cookies (might not bc cookies are evil apparently)
+1. add lag handler that calculates position based off of current system time
+2. store settings in cookies (might not bc cookies are evil apparently)
