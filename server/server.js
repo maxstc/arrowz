@@ -1,8 +1,11 @@
 let port = 41399;
+let last_update = 0;
 
 if (process.argv.length > 2) {
     port = parseInt(process.argv[2]);
 }
+
+const MS_PER_UPDATE = 50;
 
 const LEFT = -1;
 const RIGHT = 1;
@@ -103,7 +106,10 @@ function is_game_over(player) {
 }
 
 function loop() {
-    if (running) {
+    let current_time = Date.now();
+    let num_updates = parseInt((current_time - last_update) / MS_PER_UPDATE);
+    last_update = parseInt(current_time / MS_PER_UPDATE) * MS_PER_UPDATE;
+    if (running && num_updates > 0) {
         for (let i = 0; i < orders.length; i++) {
             if (orders[i] === undefined) {
                 orders[i] = 0;
@@ -118,16 +124,16 @@ function loop() {
             let direction = last_line(i).direction;
             let id = lines.length;
             if (direction === 0) {
-                last_line(i).y2 -= LINE_SPEED;
+                last_line(i).y2 -= (LINE_SPEED * num_updates);
             }
             else if (direction === 1) {
-                last_line(i).x2 += LINE_SPEED;
+                last_line(i).x2 += (LINE_SPEED * num_updates);
             }
             else if (direction === 2) {
-                last_line(i).y2 += LINE_SPEED;
+                last_line(i).y2 += (LINE_SPEED * num_updates);
             }
             else if (direction === 3) {
-                last_line(i).x2 -= LINE_SPEED;
+                last_line(i).x2 -= (LINE_SPEED * num_updates);
             }
         }
     
@@ -159,7 +165,8 @@ function loop() {
 }
 
 function start_loop() {
-    setInterval(loop, 50);
+    last_update = Date.now();
+    setInterval(loop, MS_PER_UPDATE / 2);
 }
 
 ////////// HTTP SERVER //////////
