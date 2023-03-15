@@ -1,3 +1,7 @@
+const MS_PER_UPDATE = 50;
+
+let last_update = 0;
+
 const LEFT = -1;
 const RIGHT = 1;
 const END_OF_LINE = 4;
@@ -93,21 +97,24 @@ function last_line(player) {
 }
 
 function loop() {
-    if (running) {
+    let current_time = Date.now();
+    let num_updates = parseInt((current_time - last_update) / MS_PER_UPDATE);
+    last_update = parseInt(current_time / MS_PER_UPDATE) * MS_PER_UPDATE;
+    if (running && num_updates > 0) {
         for (let i = 0; i < lines.length; i++) {
             let direction = last_line(i).direction;
     
             if (direction === 0) {
-                last_line(i).y2 -= LINE_SPEED;
+                last_line(i).y2 -= LINE_SPEED * num_updates;
             }
             else if (direction === 1) {
-                last_line(i).x2 += LINE_SPEED;
+                last_line(i).x2 += LINE_SPEED * num_updates;
             }
             else if (direction === 2) {
-                last_line(i).y2 += LINE_SPEED;
+                last_line(i).y2 += LINE_SPEED * num_updates;
             }
             else if (direction === 3) {
-                last_line(i).x2 -= LINE_SPEED;
+                last_line(i).x2 -= LINE_SPEED * num_updates;
             }
         }
         
@@ -116,7 +123,7 @@ function loop() {
 }
 
 function start_loop() {
-    setInterval(loop, 50);
+    setInterval(loop, MS_PER_UPDATE);
 }
 
 function read_notify(notification) {

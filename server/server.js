@@ -120,46 +120,48 @@ function loop() {
             orders[i] = 0;
         }
     
-        for (let i = 0; i < lines.length; i++) {
-            let direction = last_line(i).direction;
-            let id = lines.length;
-            if (direction === 0) {
-                last_line(i).y2 -= (LINE_SPEED * num_updates);
-            }
-            else if (direction === 1) {
-                last_line(i).x2 += (LINE_SPEED * num_updates);
-            }
-            else if (direction === 2) {
-                last_line(i).y2 += (LINE_SPEED * num_updates);
-            }
-            else if (direction === 3) {
-                last_line(i).x2 -= (LINE_SPEED * num_updates);
-            }
-        }
-    
-        for (let i = 0; i < lines.length; i++) {
-            if (is_game_over(i)) {
-                console.log(i + " lost via an aburpt braking maneuver!");
-                end_line(i);
-                console.log(last_line(i));
-            }
-        }
-
-        let alive_player = -1;
-        let game_is_over = true;
-        for (let i = 0; i < lines.length; i++) {
-            if (last_line(i).direction < END_OF_LINE) {
-                if (alive_player != -1) {
-                    game_is_over = false;
+        for (let u = 0; u < num_updates; u++) {
+            for (let i = 0; i < lines.length; i++) {
+                let direction = last_line(i).direction;
+                let id = lines.length;
+                if (direction === 0) {
+                    last_line(i).y2 -= LINE_SPEED;
                 }
-                else {
-                    alive_player = i;
+                else if (direction === 1) {
+                    last_line(i).x2 += LINE_SPEED;
+                }
+                else if (direction === 2) {
+                    last_line(i).y2 += LINE_SPEED;
+                }
+                else if (direction === 3) {
+                    last_line(i).x2 -= LINE_SPEED;
                 }
             }
-        }
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (is_game_over(i)) {
+                    console.log(i + " lost via an aburpt braking maneuver!");
+                    end_line(i);
+                    console.log(last_line(i));
+                }
+            }
 
-        if (game_is_over === true) {
-            stop(alive_player);
+            let alive_player = -1;
+            let game_is_over = true;
+            for (let i = 0; i < lines.length; i++) {
+                if (last_line(i).direction < END_OF_LINE) {
+                    if (alive_player != -1) {
+                        game_is_over = false;
+                    }
+                    else {
+                        alive_player = i;
+                    }
+                }
+            }
+
+            if (game_is_over === true) {
+                stop(alive_player);
+            }
         }
     }
 }
